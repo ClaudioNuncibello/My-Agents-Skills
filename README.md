@@ -25,37 +25,41 @@ my-agent-skills/
 
 ---
 
-## 📋 Catalogo Completo delle Skill
+## 📋 Catalogo Completo delle Skill (con Doppio Uso)
 
-### 1. Skill Primitive (`skill-primitive/`)
+La maggior parte delle skill ha una **doppia modalità di utilizzo**: una per quando crei un software da zero (**Greenfield**) e una per quando intervieni su codice esistente, legacy o in produzione (**Brownfield**).
 
-| Skill | Modalità di Invocazione | Scopo Pratico | Casi d'Uso Tipici |
+### 1. Skill Primitive (`skill-primitive/`) — Motori Cognitivi
+
+| Skill | Modalità | 🟢 Uso in Nuovo Progetto (Greenfield) | 🟠 Uso in Progetto Già Avviato (Brownfield / Refactoring) |
 | :--- | :--- | :--- | :--- |
-| [`codebase-design`](./skill-primitive/codebase-design/SKILL.md) | **Model-invoked** (Autonoma) | Impone la filosofia dei *Deep Modules* di John Ousterhout: interfacce semplici che nascondono implementazioni potenti ed eliminano complessità. | Quando si progetta una nuova architettura, un modulo, un package o si pianifica un refactoring strutturale. |
-| [`domain-modeling`](./skill-primitive/domain-modeling/SKILL.md) | **Model-invoked** (Autonoma) | Costruisce attivamente il glossario di business del progetto (`CONTEXT.md`) e registra le Architectural Decision Records (`docs/adr/`). | Quando si discutono requisiti, si definiscono entità e relazioni di dominio o si prendono decisioni architetturali difficili da invertire. |
-| [`grilling`](./skill-primitive/grilling/SKILL.md) | **Model-invoked** (Autonoma) | Disciplina di interrogazione socratica implacabile: fa una domanda alla volta per scavare a fondo nei requisiti prima di scrivere codice. | Utilizzata come motore interno di intervista in fase di ideazione per eliminare ogni ambiguità o assunzione nascosta. |
-| [`tdd`](./skill-primitive/tdd/SKILL.md) | **Model-invoked** (Autonoma) | Guida ferrea al Test-Driven Development (Red-Green-Refactor) con enfasi su test d'integrazione e mock minimi. | Durante la scrittura di qualsiasi componente logico, business logic o API per garantire correttezza e zero regressioni. |
+| [`codebase-design`](./skill-primitive/codebase-design/SKILL.md) | **Model-invoked** (Autonoma) | Impone la progettazione iniziale di *Deep Modules*: interfacce snelle con logica potente e incapsulata. | Guida il refactoring strutturale: identifica moduli superficiali (*shallow*) e guida la loro unione e semplificazione. |
+| [`domain-modeling`](./skill-primitive/domain-modeling/SKILL.md) | **Model-invoked** (Autonoma) | Costruisce da zero il glossario `CONTEXT.md` e registra le prime decisioni architetturali (ADR). | **Reverse-engineering del dominio**: scansiona il codice legacy, stana incoerenze nei nomi di classi/funzioni e genera il glossario. |
+| [`grilling`](./skill-primitive/grilling/SKILL.md) | **Model-invoked** (Autonoma) | Intervista socratica implacabile per chiarire i requisiti e l'idea prima di scrivere codice. | Intervista sui vincoli di sistema prima di toccare codice critico, identificando rischi e impatti collaterali. |
+| [`tdd`](./skill-primitive/tdd/SKILL.md) | **Model-invoked** (Autonoma) | Sviluppo di nuove funzionalità tramite ciclo Red-Green-Refactor guidato dai test. | **Scrittura di test di regressione** prima di toccare codice vecchio, per blindare il comportamento esistente mentre si rifattorizza. |
 
 ---
 
-### 2. Skill Operative (`skill/`)
+### 2. Skill Operative (`skill/`) — Workflow e Deliverables
 
-| Skill | Modalità di Invocazione | Scopo Pratico | Casi d'Uso Tipici |
+| Skill | Modalità | 🟢 Uso in Nuovo Progetto (Greenfield) | 🟠 Uso in Progetto Già Avviato (Brownfield / Refactoring) |
 | :--- | :--- | :--- | :--- |
-| [`grill-me`](./skill/grill-me/SKILL.md) | **User-invoked** (`@grill-me`) | Avvia una sessione interattiva di interrogatorio su un'idea o una feature prima di toccare il codice. | Ideale all'inizio di una task o quando hai un'idea vaga e vuoi che l'AI ti metta alle strette per chiarirla. |
-| [`grill-with-docs`](./skill/grill-with-docs/SKILL.md) | **User-invoked** (`@grill-with-docs`) | Combina l'interrogatorio socratico con la produzione contestuale del glossario `CONTEXT.md` e degli ADR ufficiali. | Quando inizi un progetto nuovo o una feature complessa e vuoi lasciare una traccia formale per il team. |
-| [`to-spec`](./skill/to-spec/SKILL.md) | **User-invoked** (`@to-spec`) | Converte una conversazione o una sessione di grilling in un documento di specifica formale e strutturato. | Subito dopo aver chiarito i requisiti, per ottenere un documento chiaro approvabile prima di scrivere codice. |
-| [`to-tickets`](./skill/to-tickets/SKILL.md) | **User-invoked** (`@to-tickets`) | Scompone una specifica in ticket autonomi a fette verticali (*vertical slices*) ordinati per dipendenza. | Per trasformare una spec in task pratici, adatti a essere eseguiti uno alla volta in sessioni pulite. |
-| [`implement`](./skill/implement/SKILL.md) | **User-invoked** (`@implement`) | Esegue un ticket o una specifica applicando TDD rigoroso, typechecking continuo e code-review finale. | Per la fase di codifica vera e propria: passi il ticket e lasci che l'agente lo implementi con standard elevati. |
-| [`code-review`](./skill/code-review/SKILL.md) | **User / Model** (`@code-review`) | Revisiona il codice su due assi paralleli: correttezza funzionale (test, edge-case) e pulizia/design architettonico. | Al termine di una feature, prima di fare il commit/merge, o per fare il refactoring di codice esistente. |
-| [`diagnosing-bugs`](./skill/diagnosing-bugs/SKILL.md) | **User / Model** (`@diagnosing-bugs`) | Protocollo scientifico per scovare bug sfuggenti tramite ciclo isolato: ipotesi → test riproducibile → fix minimo. | Quando un test fallisce inaspettatamente, c'è un comportamento anomalo o non si riesce a trovare la causa radice. |
-| [`prototype`](./skill/prototype/SKILL.md) | **User-invoked** (`@prototype`) | Genera spike di codice rapido e usa-e-getta (UI o logica) per rispondere a dubbi tecnici di fattibilità. | Quando vuoi esplorare se una libreria o una soluzione UI funziona visivamente prima di impegnarti nell'architettura finale. |
-| [`handoff`](./skill/handoff/SKILL.md) | **User-invoked** (`@handoff`) | Comprime l'intera sessione corrente in un riassunto denso e strutturato per la prossima chat o sessione. | A fine giornata, quando la chat diventa troppo lunga, o prima di riavviare l'agente per continuare il lavoro domani. |
-| [`to-questionnaire`](./skill/to-questionnaire/SKILL.md) | **User-invoked** (`@to-questionnaire`) | Converte una decisione tecnica o di prodotto in un questionario a risposte multiple chiaro e compilabile. | Quando devi raccogliere feedback o scelte dal cliente finale o da colleghi non tecnici senza fargli leggere gergo tecnico. |
-| [`wayfinder`](./skill/wayfinder/SKILL.md) | **User-invoked** (`@wayfinder`) | Mappa ed esplora codebase complesse o poco familiari creando decision tickets per farsi strada nella nebbia senza modificare codice alla cieca. | Onboarding su progetti legacy, grandi migrazioni o feature gigantesche di cui non è chiara l'architettura. |
-| [`improve-codebase-architecture`](./skill/improve-codebase-architecture/SKILL.md) | **User-invoked** (`@improve-codebase-architecture`) | Scansiona una codebase esistente, individua moduli superficiali/aggrovigliati e genera un report HTML interattivo con diagrammi prima/dopo per guidare il refactoring. | Manutenzione proattiva e ristrutturazione del codice esistente verso i Deep Modules di Ousterhout. |
-| [`research`](./skill/research/SKILL.md) | **User-invoked** (`@research`) | Esegue un'analisi approfondita di documentazione, pacchetti npm o standard di settore e produce un report sintetico. | Prima di scegliere una libreria o quando bisogna integrare un'API di terze parti poco conosciuta. |
-| [`writing-for-agents`](./skill/writing-for-agents/SKILL.md) | **User / Reference** | Guida di riferimento per scrivere prompt, istruzioni e nuove skill formattate in modo che gli agenti non sbaglino. | Quando vuoi creare una nuova skill personalizzata o documentare convenzioni per il tuo agente. |
+| [`grill-me`](./skill/grill-me/SKILL.md) | **User-invoked** (`@grill-me`) | Intervista esplorativa informale e senza file scritti per mettere alla prova un'idea iniziale. | Brainstorming rapido su una singola modifica o su come affrontare un refactoring senza toccare file del repo. |
+| [`grill-with-docs`](./skill/grill-with-docs/SKILL.md) | **User-invoked** (`@grill-with-docs`) | Intervista iniziale formale con generazione di `CONTEXT.md` e prime ADR ufficiali. | Allineamento del progetto: scansiona la codebase esistente e crea per la prima volta `CONTEXT.md` e ADR storiche. |
+| [`to-spec`](./skill/to-spec/SKILL.md) | **User-invoked** (`@to-spec`) | Converte i requisiti emersi dall'intervista nella specifica tecnica del nuovo software (`SPEC.md`). | Formalizza le specifiche di una **grande migrazione**, di una nuova feature integrata o di un refactoring complesso. |
+| [`to-tickets`](./skill/to-tickets/SKILL.md) | **User-invoked** (`@to-tickets`) | Scompone la specifica in fette verticali atomiche per l'implementazione ordinaria. | Scompone il refactoring con il pattern **Expand-Contract** (nuova interfaccia → migrazione chiamanti → rimozione legacy). |
+| [`implement`](./skill/implement/SKILL.md) | **User-invoked** (`@implement`) | Implementa i nuovi ticket con TDD rigoroso, typechecking continuo e review finale. | Esegue modifiche o refactoring garantendo che l'intera suite di test esistente resti verde e senza regressioni. |
+| [`code-review`](./skill/code-review/SKILL.md) | **User / Model** (`@code-review`) | Revisione finale delle nuove feature prima di fare commit o merge. | **Audit preventivo del codice legacy**: individua debiti tecnici, code smell e accoppiamenti prima di modificarli. |
+| [`diagnosing-bugs`](./skill/diagnosing-bugs/SKILL.md) | **User / Model** (`@diagnosing-bugs`) | Risoluzione di test falliti o bug logici durante la scrittura iniziale del software. | **Isolamento scientifico di anomalie in produzione**: formula ipotesi e scrive test isolati prima di toccare codice a tentativi. |
+| [`wayfinder`](./skill/wayfinder/SKILL.md) | **User-invoked** (`@wayfinder`) | Pianificazione di progetti enormi o complessi con troppa nebbia iniziale. | **Bussola di onboarding**: esplora e mappa codebase grandi o sconosciute tramite decision tickets sequenziali. |
+| [`improve-codebase-architecture`](./skill/improve-codebase-architecture/SKILL.md) | **User-invoked** (`@improve-codebase-architecture`) | Verifica e consolidamento dell'architettura dopo i primi moduli sviluppati. | **Refactoring proattivo**: analizza la cronologia git, stana i punti caldi e genera un report HTML con diagrammi prima/dopo. |
+| [`prototype`](./skill/prototype/SKILL.md) | **User-invoked** (`@prototype`) | Spike di codice rapido usa-e-getta per verificare la fattibilità dell'idea o della UI. | Verifica rapida di compatibilità prima di adottare una nuova libreria o algoritmo nella codebase esistente. |
+| [`handoff`](./skill/handoff/SKILL.md) | **User-invoked** (`@handoff`) | Salva lo stato dei lavori al termine della sessione di ideazione o setup. | Snapshot dello stato dell'arte del progetto o passaggio di consegne ordinato prima di cambiare sessione o task. |
+| [`to-questionnaire`](./skill/to-questionnaire/SKILL.md) | **User-invoked** (`@to-questionnaire`) | Questionario a risposte multiple per raccogliere i requisiti iniziali dal committente. | Questionario per sottoporre a clienti o colleghi decisioni di business (es. policy di deprecazione, migrazione dati). |
+| [`teach`](./skill/teach/SKILL.md) | **User-invoked** (`@teach`) | Trasforma il workspace in un'aula virtuale per imparare nuove tecnologie o linguaggi da zero. | Studio guidato di nuove librerie, pattern o linguaggi necessari per la manutenzione o l'evoluzione del progetto. |
+| [`wait-what`](./skill/wait-what/SKILL.md) | **User-invoked** (`@wait-what`) | Chiede all'AI di fermarsi e rispiegare un concetto teorico in termini semplici. | Freno d'emergenza quando l'AI spiega una parte intricata del codice legacy con troppo gergo incomprensibile. |
+| [`research`](./skill/research/SKILL.md) | **User-invoked** (`@research`) | Ricerca approfondita di documentazione su pacchetti o librerie da adottare. | Studio di compatibilità tra versioni di dipendenze legacy o analisi di API terze da aggiornare. |
+| [`writing-for-agents`](./skill/writing-for-agents/SKILL.md) | **User / Reference** | Scrittura di prompt, istruzioni e nuove skill per l'agente. | Redazione del file `AGENTS.md` del progetto per insegnare all'AI le convenzioni specifiche del codice aziendale. |
 
 ---
 
@@ -297,6 +301,49 @@ flowchart TD
   @diagnosing-bugs Il software presenta questo comportamento inatteso: [dettagli o log dell'errore]. Non modificare il codice alla cieca: formula le ipotesi, crea un test minimo isolato che riproduce il bug e individua la causa radice prima di applicare il fix.
   ```
 - **Risultato**: Rifiuta categoricamente modifiche a tentativi; applica il ciclo scientifico (ipotesi → test di riproduzione → root cause analysis → fix minimale e verifica di non-regressione).
+
+---
+
+## 🎓 Workflow Didattico: Apprendere Nuove Tecnologie (@teach & @wait-what)
+
+Oltre allo sviluppo e alla manutenzione software, la libreria include un sistema avanzato per **utilizzare l'agente AI come tutor didattico personale**, strutturato secondo i principi delle scienze cognitive (ritenzione a lungo termine, richiamo attivo e zona di sviluppo prossimale).
+
+Questo approccio è ideale sia per **studiare da zero un nuovo argomento** (es. un linguaggio come Rust o Go, l'architettura a eventi, Kubernetes) sia per **colmare lacune su una tecnologia complessa presente in un progetto già avviato**.
+
+```mermaid
+flowchart TD
+    A["1. Definizione Obiettivo<br><code>@teach [argomento]</code>"] --> B["2. Creazione Missione<br><code>MISSION.md</code> + <code>RESOURCES.md</code>"]
+    B --> C["3. Lezione Pratica HTML<br><code>lessons/0001-...html</code>"]
+    C --> D["4. Consolidamento & Diario<br><code>learning-records/0001-...md</code>"]
+    D --> E["5. Schede di Riferimento<br><code>reference/...html</code>"]
+    C -. "Spiegazione poco chiara? <br><code>@wait-what</code>" .-> C
+```
+
+---
+
+### 1. Avviare un Percorso di Studio Multi-Sessione (`@teach`)
+- **Cosa scrivi tu (Prompt):**
+  ```text
+  @teach Vorrei imparare [argomento, es. 'Architettura a Microservizi e Domain-Driven Design' o 'Rust per Backend']. Il mio obiettivo pratico è [es. 'costruire servizi resilienti per il mio lavoro'].
+  ```
+- **Cosa fa l'AI**:
+  Non produce un muro di testo temporaneo in chat: trasforma l'ambiente in un'aula virtuale interattiva persistente:
+  - 📄 [`MISSION.md`](./MISSION.md): Formalizza lo scopo dell'apprendimento e il motivo pratico per cui vuoi padroneggiare la materia.
+  - 📄 [`RESOURCES.md`](./RESOURCES.md): Raccoglie fonti primarie verificate (documentazione ufficiale, libri e articoli di riferimento).
+  - 📁 `lessons/0001-[argomento].html`: Una lezione HTML auto-contenuta, pulita ed elegante (stile Tufte) focalizzata su una singola abilità, con piccoli quiz o verifiche pratiche, apribile nel browser.
+  - 📁 `learning-records/0001-[concetto].md`: Un registro permanente delle intuizioni assimilate, utile all'agente per non ripetere concetti già acquisiti nelle sessioni successive.
+  - 📁 `reference/`: Fogli riassuntivi, tabelle sintattiche e cheat-sheet per consultazione rapida.
+
+---
+
+### 2. Il Freno d'Emergenza Didattico (`@wait-what`)
+- **Quando serve**: Durante lo studio o una discussione di codice, l'AI usa troppo gergo, compie salti concettuali o fornisce spiegazioni poco chiare.
+- **Cosa scrivi tu (Prompt):**
+  ```text
+  @wait-what
+  ```
+- **Cosa fa l'AI**:
+  Si ferma all'istante, azzera la spiegazione e la riformula in **Simplified Technical English** (frasi dirette, vocabolario comune ed esempi pratici terra-terra).
 
 ---
 
