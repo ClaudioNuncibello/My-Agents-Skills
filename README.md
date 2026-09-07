@@ -57,35 +57,171 @@ my-agent-skills/
 
 ---
 
-## 🔗 Workflow Tipico (Chain di Esempio)
+## 🔗 Workflow Completo Passo-Passo (Esempio Generale di Software)
 
-Come usare queste skill insieme in un progetto reale (es. *Creazione di una Web App / Sito Web per un Cliente*):
+Ecco come si utilizzano concretamente queste skill nel ciclo di vita di un **qualsiasi progetto software** (un'applicazione, un microservizio, una libreria o una piattaforma complessa), dall'idea embrionale al codice collaudato.
+
+Immaginiamo un caso reale: **"Progettazione e sviluppo di un nuovo servizio software per l'Elaborazione Transazioni & Macchina a Stati (Transactions & Task Engine)"**.
 
 ```mermaid
 flowchart TD
-    A["1. Ideazione & Requisiti<br><code>@grill-with-docs</code>"] --> B["2. Specifica Formale<br><code>@to-spec</code>"]
-    B --> C["3. Decomposizione<br><code>@to-tickets</code>"]
-    C --> D["4. Esecuzione Ticket<br><code>@implement</code>"]
-    D --> E["5. Verifica di Qualità<br><code>@code-review</code>"]
-    E --> F{"Ticket completati?"}
-    F -- No --> D
-    F -- Sì --> G["6. Conclusione & Handoff<br><code>@handoff</code>"]
+    subgraph Fase1["Fase 1: Analisi di Dominio & Vocabolario"]
+        A1["Tu scrivi:<br><code>@grill-with-docs</code>"] --> A2["L'AI interroga:<br><code>grilling</code> + <code>domain-modeling</code>"]
+        A2 --> A3["File generati:<br><code>CONTEXT.md</code><br><code>docs/adr/0001-...md</code>"]
+    end
+
+    subgraph Fase2["Fase 2: Specifiche & Architettura"]
+        B1["Tu scrivi:<br><code>@to-spec</code>"] --> B2["L'AI formalizza architettura e contratti"]
+        B2 --> B3["File generato:<br><code>SPEC.md</code>"]
+        B3 --> B4["Tu scrivi:<br><code>@to-tickets</code>"]
+        B4 --> B5["File generati:<br><code>tickets/01-...md</code><br><code>tickets/02-...md</code>"]
+    end
+
+    subgraph Fase3["Fase 3: Sviluppo TDD & Qualità"]
+        C1["Tu scrivi:<br><code>@implement tickets/01-...md</code>"] --> C2["L'AI applica:<br><code>tdd</code> + <code>codebase-design</code>"]
+        C2 --> C3["File generati:<br><code>tests/...test.ts</code><br><code>src/...ts</code>"]
+        C3 --> C4["Tu scrivi:<br><code>@code-review</code>"]
+    end
+
+    subgraph Fase4["Fase 4: Chiusura & Consegna"]
+        D1["Tu scrivi:<br><code>@handoff</code>"] --> D2["File generato:<br><code>HANDOFF.md</code>"]
+    end
+
+    Fase1 --> Fase2
+    Fase2 --> Fase3
+    Fase3 --> Fase4
 ```
 
-### Passaggi Dettagliati:
+---
 
-1. **Requisiti & Dominio**:
-   - Lanci `@grill-with-docs`: l'agente ti sottopone a un'intervista socratica, estrae i termini chiave del cliente e crea contemporaneamente il file `CONTEXT.md` (es. cosa si intende per "Prenotazione", "Utente", "Fascia Oraria") e i primi ADR.
-2. **Specifica Tecnica**:
-   - Lanci `@to-spec`: l'agente riassume tutto ciò che è emerso nell'intervista in un documento `SPEC.md` chiaro, con requisiti funzionali, vincoli tecnici e criteri di accettazione.
-3. **Pianificazione Operativa**:
-   - Lanci `@to-tickets`: la specifica viene suddivisa in fette verticali (es. `ticket-01-database-schema`, `ticket-02-auth-flow`, `ticket-03-booking-ui`).
-4. **Sviluppo TDD**:
-   - Per ciascun ticket, lanci `@implement`: l'agente scrive prima i test (`tdd`), implementa la logica minima, verifica i tipi e lancia la suite di test.
-5. **Revisione del Codice**:
-   - Chiami `@code-review` per accertarti che il codice rispetti i principi di `codebase-design` e non introduca complessità accidentale.
-6. **Passaggio di Consegne**:
-   - Alla fine della sessione di lavoro o della giornata, lanci `@handoff`: l'agente produce un riassunto perfetto dello stato di avanzamento da riprendere nella prossima sessione.
+### Step 1: Chiarire i Requisiti e Fissare i Termini (`@grill-with-docs`)
+
+Prima di scrivere una sola riga di codice, metti l'AI in modalità "intervistatore implacabile" per eliminare ogni ambiguità nei requisiti, individuare casi limite (*edge cases*) e formalizzare il vocabolario del software.
+
+- **Cosa scrivi tu (Prompt):**
+  ```text
+  @grill-with-docs Devo progettare un nuovo servizio software per l'elaborazione di transazioni asincrone con una macchina a stati. Fammi tutte le domande necessarie per chiarire i requisiti, sfidare le mie assunzioni su fallimenti, concorrenza e definire il vocabolario di dominio.
+  ```
+- **Cosa fa l'AI dietro le quinte:**
+  - Attiva la primitiva `grilling`: ti interroga con una sola domanda alla volta (es: *"Cosa succede se una transazione fallisce a metà? Il sistema supporta l'idempotenza? Gli stati possono regredire o sono solo transizioni in avanti? Come gestiamo i timeout?"*).
+  - Attiva la primitiva `domain-modeling`: man mano che stabilite concetti chiave (es. differenza formale tra *Pending*, *Settled* e *Failed*), li registra immediatamente nel glossario.
+- **File generati / modificati:**
+  - 📄 [`CONTEXT.md`](./CONTEXT.md): Glossario ufficiale del sistema con entità, stati e regole di business (nessun dettaglio di framework, solo logica pura di dominio).
+  - 📁 `docs/adr/0001-transizioni-esplicite-state-machine.md`: Architectural Decision Record (ADR) che documenta la scelta di una macchina a stati finiti (FSM) rigorosa per scongiurare stati inconsistenti a fronte di carichi concorrenti.
+
+---
+
+### Step 2: Trasformare l'Intervista in Specifica Tecnica (`@to-spec`)
+
+Conclusa l'analisi dei requisiti, trasformi l'intera discussione in un documento tecnico formale di architettura e design.
+
+- **Cosa scrivi tu (Prompt):**
+  ```text
+  @to-spec Abbiamo chiarito tutti i requisiti e i limiti operativi. Ora genera il documento di specifica tecnica completo (SPEC.md) definendo contratti di interfaccia, schema dati, gestione errori e criteri di accettazione.
+  ```
+- **Cosa fa l'AI:**
+  Sintetizza i requisiti funzionali e non funzionali, i payload di input/output, i meccanismi di retry e i criteri di collaudo.
+- **File generati / modificati:**
+  - 📄 [`SPEC.md`](./SPEC.md): La guida tecnica definitiva del sistema, con modelli dati, sequenze di chiamata, contratti API/libreria e acceptance criteria verificabili.
+
+---
+
+### Step 3: Decomporre la Specifica in Ticket Autonomi (`@to-tickets`)
+
+Un sistema software non si implementa in un blocco unico. Bisogna scomporlo in unità di lavoro atomiche (*vertical slices*) ordinate per dipendenze.
+
+- **Cosa scrivi tu (Prompt):**
+  ```text
+  @to-tickets Scomponi la SPEC.md in ticket di sviluppo autonomi, ciascuno realizzabile e testabile in una singola sessione di lavoro.
+  ```
+- **Cosa fa l'AI:**
+  Analizza le dipendenze logiche e crea ticket verticali (storage + core logic + test per ciascuna funzionalità).
+- **File generati / modificati:**
+  - 📁 `tickets/`
+    - 📄 `tickets/01-schema-dati-e-interfacce-dominio.md` (Definizione tipi, entità base e storage layer)
+    - 📄 `tickets/02-motore-macchina-a-stati-core.md` (Logica pura di transizione stati e validazione invarianti)
+    - 📄 `tickets/03-servizio-elaborazione-transazioni-e-retry.md` (Gestione asincrona, idempotenza e failure recovery)
+    - 📄 `tickets/04-interfaccia-pubblica-api-e-integrazione.md` (Esposizione API/SDK con contratti pubblici)
+
+---
+
+### Step 4: Implementare un Ticket con TDD e Deep Modules (`@implement`)
+
+Assegni all'agente un singolo ticket alla volta da sviluppare con i massimi standard ingegneristici.
+
+- **Cosa scrivi tu (Prompt):**
+  ```text
+  @implement Lavora sul ticket `tickets/02-motore-macchina-a-stati-core.md`. Segui rigorosamente il TDD: scrivi prima i test unitari per coprire tutte le transizioni lecite ed edge cases (transizioni illegali, tentativi concorrenti), poi sviluppa il codice minimo.
+  ```
+- **Cosa fa l'AI dietro le quinte:**
+  - Attiva `tdd`: scrive prima la suite di test che fallisce (**RED**), scrive l'implementazione minima necessaria affinché i test passino (**GREEN**), quindi effettua il refactoring (**REFACTOR**).
+  - Attiva `codebase-design`: adotta il principio dei *Deep Modules* (interfaccia pubblica snella ed elegante che nasconde internamente tutta la complessità di validazione e locking).
+- **File generati / modificati:**
+  - 📄 `tests/core/state-machine.test.ts`: Suite di test completa (casi positivi, eccezioni, condizioni al contorno).
+  - 📄 `src/core/state-machine.ts`: Implementazione del modulo con incapsulamento rigoroso.
+  - 📄 `src/core/types.ts`: Contratti di tipo pubblici e sicuri.
+
+---
+
+### Step 5: Revisionare il Codice prima del Commit (`@code-review`)
+
+Prima di unire o inviare il codice, effettui un controllo di qualità parallelo a due dimensioni.
+
+- **Cosa scrivi tu (Prompt):**
+  ```text
+  @code-review Revisiona il codice implementato per il ticket 02 prima di effettuare il commit.
+  ```
+- **Cosa fa l'AI:**
+  Revisiona il codice su due assi indipendenti:
+  1. *Correttezza & Robustezza*: Verifica potenziale memory leak, deadlock, race condition, gestione inadeguata di errori o corner cases scoperti.
+  2. *Design & Semplicità*: Verifica che l'interfaccia non esponga dettagli interni non necessari (*information leakage*) e rispetti l'architettura.
+- **File generati / modificati:**
+  - Eventuali refactoring applicati direttamente al codice sorgente e semaforo verde per il commit Git.
+
+---
+
+### Step 6: Congelare lo Stato per la Prossima Sessione (`@handoff`)
+
+A fine sessione, o quando il contesto della finestra chat diventa saturo, crei un passaggio di consegne pulito per ripartire senza attriti.
+
+- **Cosa scrivi tu (Prompt):**
+  ```text
+  @handoff Abbiamo completato e testato con successo il ticket 02. Prepara un handoff completo per consentire a una nuova sessione di riprendere direttamente dal ticket 03.
+  ```
+- **Cosa fa l'AI:**
+  Sintetizza in modo compatto le decisioni architetturali prese, lo stato dei file, i test attivi e il prossimo obiettivo.
+- **File generati / modificati:**
+  - 📄 [`HANDOFF.md`](./HANDOFF.md) (oppure prompt compatto da incollare nella chat successiva: *"Stato: Ticket 01 e 02 completati e testati al 100%. Prossimo obiettivo: Ticket 03 (`servizio-elaborazione-transazioni`). Leggi `SPEC.md` e `tickets/03-...md` per procedere."*).
+
+---
+
+## 🛠️ Flussi Secondari per Situazioni Specifiche
+
+Durante lo sviluppo di software emergono regolarmente situazioni non lineari. Ecco come gestirle:
+
+### A. Decisione Tecnica o di Prodotto da Condividere (`@to-questionnaire`)
+- **Situazione**: Devi decidere tra due strategie architetturali (es. *Storage SQL vs Event-Sourced*, oppure *Politica di retry lineare vs exponential backoff*) e vuoi raccogliere input dal team o dal committente.
+- **Prompt:**
+  ```text
+  @to-questionnaire Dobbiamo decidere la strategia di persistenza e la politica di retry per le transazioni fallite. Prepara un questionario chiaro a risposte multiple, spiegando pro e contro in termini semplici.
+  ```
+- **File generato:** `docs/QUESTIONARIO-STRATEGIA-RETRY.md`.
+
+### B. Bug Complesso o Regressione Inaspettata (`@diagnosing-bugs`)
+- **Situazione**: Una transazione restituisce uno stato inatteso durante un test di carico e la causa è sconosciuta.
+- **Prompt:**
+  ```text
+  @diagnosing-bugs Il servizio fallisce intermittentemente quando riceve due eventi simultanei per la stessa transazione. Applica il metodo scientifico di diagnosi: formula le ipotesi, scrivi un test minimo isolato che riproduce il bug ed esegui il fix mirato.
+  ```
+- **File generati:** `tests/reproduce-race-condition.test.ts` e fix mirato.
+
+### C. Prototipo Rapido di Fattibilità Tecnica (`@prototype`)
+- **Situazione**: Vuoi verificare se una specifica libreria o un algoritmo di hashing/crittografia soddisfa i requisiti di performance prima di scriverlo nella specifica formale.
+- **Prompt:**
+  ```text
+  @prototype Crea uno spike rapido e usa-e-getta per misurare il throughput di questa libreria di serializzazione. Non creare astrazioni o architettura formale, solo codice minimo per raccogliere metriche.
+  ```
+- **File generati:** `src/prototypes/throughput-spike.ts`.
 
 ---
 
