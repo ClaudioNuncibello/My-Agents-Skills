@@ -52,6 +52,8 @@ my-agent-skills/
 | [`prototype`](./skill/prototype/SKILL.md) | **User-invoked** (`@prototype`) | Genera spike di codice rapido e usa-e-getta (UI o logica) per rispondere a dubbi tecnici di fattibilità. | Quando vuoi esplorare se una libreria o una soluzione UI funziona visivamente prima di impegnarti nell'architettura finale. |
 | [`handoff`](./skill/handoff/SKILL.md) | **User-invoked** (`@handoff`) | Comprime l'intera sessione corrente in un riassunto denso e strutturato per la prossima chat o sessione. | A fine giornata, quando la chat diventa troppo lunga, o prima di riavviare l'agente per continuare il lavoro domani. |
 | [`to-questionnaire`](./skill/to-questionnaire/SKILL.md) | **User-invoked** (`@to-questionnaire`) | Converte una decisione tecnica o di prodotto in un questionario a risposte multiple chiaro e compilabile. | Quando devi raccogliere feedback o scelte dal cliente finale o da colleghi non tecnici senza fargli leggere gergo tecnico. |
+| [`wayfinder`](./skill/wayfinder/SKILL.md) | **User-invoked** (`@wayfinder`) | Mappa ed esplora codebase complesse o poco familiari creando decision tickets per farsi strada nella nebbia senza modificare codice alla cieca. | Onboarding su progetti legacy, grandi migrazioni o feature gigantesche di cui non è chiara l'architettura. |
+| [`improve-codebase-architecture`](./skill/improve-codebase-architecture/SKILL.md) | **User-invoked** (`@improve-codebase-architecture`) | Scansiona una codebase esistente, individua moduli superficiali/aggrovigliati e genera un report HTML interattivo con diagrammi prima/dopo per guidare il refactoring. | Manutenzione proattiva e ristrutturazione del codice esistente verso i Deep Modules di Ousterhout. |
 | [`research`](./skill/research/SKILL.md) | **User-invoked** (`@research`) | Esegue un'analisi approfondita di documentazione, pacchetti npm o standard di settore e produce un report sintetico. | Prima di scegliere una libreria o quando bisogna integrare un'API di terze parti poco conosciuta. |
 | [`writing-for-agents`](./skill/writing-for-agents/SKILL.md) | **User / Reference** | Guida di riferimento per scrivere prompt, istruzioni e nuove skill formattate in modo che gli agenti non sbaglino. | Quando vuoi creare una nuova skill personalizzata o documentare convenzioni per il tuo agente. |
 
@@ -219,6 +221,82 @@ Durante il ciclo di vita del software possono verificarsi situazioni non lineari
   @prototype Crea uno spike rapido usa-e-getta per verificare la fattibilità di [tecnologia/algoritmo/componente]. Non implementare architetture complesse, solo codice minimo per testare il funzionamento.
   ```
 - **File generati:** `src/prototypes/[nome-spike].ts`.
+
+---
+
+## 🔄 Workflow per Progetti Già Avviati (Refactoring, Manutenzione & Bug Fixing)
+
+Quando devi intervenire su una **codebase esistente, legacy o già in produzione**, le priorità cambiano rispetto a un progetto nuovo: prima di scrivere codice devi comprendere la struttura esistente senza romperla, individuare dove c'è attrito (*friction*) e rifattorizzare con sicurezza.
+
+```mermaid
+flowchart TD
+    subgraph S1["1. Orientamento & Comprensione"]
+        A1["Codebase vasta o non familiare?<br><code>@wayfinder</code>"]
+        A2["Vocabolario e convenzioni confuse?<br><code>@grill-with-docs</code> (Reverse-Eng)"]
+    end
+
+    subgraph S2["2. Ristrutturazione & Refactoring"]
+        B1["Audit architetturale visivo:<br><code>@improve-codebase-architecture</code>"]
+        B2["Pianificazione migrazione sicura:<br><code>@to-tickets</code> (Pattern Expand-Contract)"]
+        B3["Esecuzione refactoring:<br><code>@implement</code> + <code>codebase-design</code>"]
+    end
+
+    subgraph S3["3. Risoluzione di Bug Ostici"]
+        C1["Comportamento anomalo o regressione:<br><code>@diagnosing-bugs</code>"]
+    end
+
+    S1 --> S2
+    S1 --> S3
+```
+
+---
+
+### 1. Orientarsi in una Codebase Esistente o Complessa (`@wayfinder`)
+- **Quando serve**: Sei entrato in un progetto già avviato, di grandi dimensioni o non familiare, e la strada per orientarsi è avvolta nella nebbia. Invece di provare a modificare codice alla cieca o farsi sopraffare dalla quantità di file, `wayfinder` traccia una mappa di "decision tickets" ed esplora la codebase in modo incrementale.
+- **Prompt:**
+  ```text
+  @wayfinder Devo orientarmi su questa codebase esistente e pianificare [obiettivo della migrazione o feature da inserire]. Costruisci la mappa delle decisioni ed esplora l'architettura un passo alla volta.
+  ```
+- **Cosa fa l'AI**:
+  Non modifica codice. Crea una mappa di ticket di esplorazione, risolve un dubbio architetturale per sessione e fa luce progressivamente sull'architettura (*clearing the fog of war*).
+
+---
+
+### 2. Manutenzione Proattiva e Ristrutturazione Moduli (`@improve-codebase-architecture`)
+- **Quando serve**: Il software funziona, ma il codice è diventato disordinato, con moduli "troppo sottili" (*shallow modules*), logica sparsa o dipendenze aggrovigliate che rendono difficile aggiungere nuove feature o far lavorare bene gli agenti AI.
+- **Prompt:**
+  ```text
+  @improve-codebase-architecture Scansiona la codebase esistente alla ricerca di opportunità di refactoring e deepening. Genera il report visivo HTML con i diagrammi prima/dopo per valutare dove intervenire.
+  ```
+- **Cosa fa l'AI**:
+  1. Analizza lo storico Git (`git log`) per individuare i file modificati più di frequente (*hot spots*) e le aree a maggior complessità.
+  2. Genera un report HTML completo e visivo (con grafici Mermaid prima/dopo e punteggio di raccomandazione) aprendolo direttamente nel tuo browser.
+  3. Ti interroga sulle opzioni proposte per decidere insieme quale modulo consolidare (*Deep Module* di John Ousterhout).
+- **Come eseguire il refactoring in sicurezza**:
+  - Con `@to-tickets`, richiedi una scomposizione basata sul pattern **Expand-Contract**:
+    1. *Expand*: Si introduce la nuova interfaccia profonda accanto al codice legacy.
+    2. *Migrate*: Si spostano i chiamanti un componente alla volta mantenendo la test suite verde.
+    3. *Contract*: Si rimuove il vecchio codice legacy senza mai bloccare il sistema.
+
+---
+
+### 3. Allineare il Vocabolario di un Progetto Legacy (`@grill-with-docs`)
+- **Quando serve**: La codebase ha molti anni e i nomi delle classi, tabelle del database e funzioni non corrispondono più a come il business chiama le cose.
+- **Prompt:**
+  ```text
+  @grill-with-docs Esamina il codice sorgente esistente in src/. Metti alla prova i termini usati, individua contraddizioni tra codice e regole di business, e crea per la prima volta il CONTEXT.md ufficiale del progetto.
+  ```
+- **Risultato**: Allineamento immediato tra te e l'agente sulle convenzioni e sul glossario reale del progetto, salvato in `CONTEXT.md` per tutte le sessioni future.
+
+---
+
+### 4. Risolvere Bug Ostici e Regressioni senza Rompere il Resto (`@diagnosing-bugs`)
+- **Quando serve**: Si manifesta un bug intermittente, una race condition o un errore inspiegabile su codice già in produzione.
+- **Prompt:**
+  ```text
+  @diagnosing-bugs Il software presenta questo comportamento inatteso: [dettagli o log dell'errore]. Non modificare il codice alla cieca: formula le ipotesi, crea un test minimo isolato che riproduce il bug e individua la causa radice prima di applicare il fix.
+  ```
+- **Risultato**: Rifiuta categoricamente modifiche a tentativi; applica il ciclo scientifico (ipotesi → test di riproduzione → root cause analysis → fix minimale e verifica di non-regressione).
 
 ---
 
