@@ -2,29 +2,6 @@
 
 Collezione curata e definitiva di **Skill per Agenti AI** (Antigravity, Claude Code, Gemini CLI, Cursor). Questa libreria raccoglie le migliori discipline di ingegneria del software, modellazione di dominio e flussi di lavoro per progettare, specificare, implementare e revisionare progetti software con l'ausilio dell'Intelligenza Artificiale.
 
----
-
-## 🏛️ Architettura della Libreria: Due Livelli
-
-La cartella è organizzata su due livelli distinti ma complementari:
-
-```
-my-agent-skills/
-├── skill-primitive/      ← Motori interni & discipline cognitive (Model-invoked)
-└── skill/                ← Flussi di lavoro operativi & task-oriented (User & Model invoked)
-```
-
-1. **`skill-primitive/` (Fondamenta cognitive / Regole invisibili)**:
-   - Non sono pensate per essere lanciate direttamente dall'utente per produrre un deliverable isolato.
-   - Fungono da **disciplina interna** del modello AI durante il lavoro: ad esempio, come condurre un'intervista socratica senza deviare (`grilling`), come mantenere il glossario di business (`domain-modeling`), come scrivere codice tramite test prima del codice (`tdd`), o come progettare moduli profondi con API semplici (`codebase-design`).
-   - Hanno `disable-model-invocation: false` (possono attivarsi da sole quando il modello riconosce il contesto).
-
-2. **`skill/` (Skill operative / Workflow concreti)**:
-   - Sono i punti di ingresso per l'utente (tramite `@nome-skill` o slash commands) o wrapper che orchestrano le primitive.
-   - Ogni skill produce un **deliverable concreto**: un documento di specifiche (`to-spec`), una suddivisione in ticket (`to-tickets`), codice implementato e testato (`implement`), una revisione del codice (`code-review`), o un riassunto di handoff (`handoff`).
-
----
-
 ## 📋 Catalogo Completo delle Skill (con Doppio Uso)
 
 La maggior parte delle skill ha una **doppia modalità di utilizzo**: una per quando crei un software da zero (**Greenfield**) e una per quando intervieni su codice esistente, legacy o in produzione (**Brownfield**).
